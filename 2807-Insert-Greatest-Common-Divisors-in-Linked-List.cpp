@@ -14,18 +14,11 @@ public:
         ListNode* cur = head;
         ListNode* cur2 = head->next;
         while(cur2){
-            int smallest = min(cur->val , cur2->val);
-            while (smallest)
-            {
-                if(cur->val % smallest == 0 && cur2->val % smallest == 0){
-                    ListNode* newNode = new ListNode(smallest);
-                    newNode->next = cur2;
-                    cur->next = newNode;
-                    break;
-                }
-                smallest--;
-            }
-            cur = cur->next->next;
+            int gcd = __gcd(cur->val, cur2->val);
+            ListNode* newNode = new ListNode(gcd);
+            cur->next = newNode;
+            newNode->next = cur2;
+            cur = cur2;
             cur2 = cur2->next;
         }
         return head;
