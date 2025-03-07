@@ -1,39 +1,31 @@
 class Solution {
 public:
     vector<int> closestPrimes(int left, int right) {
-        vector<int> v;
-        int num1 = -1 , num2 = -1 , difference = INT16_MAX; 
-        int ans1 = -1 , ans2 = -1;
-        for (int i=left ; i<=right ; i++)
-        {
-            if(isPrime(i)){
-                if(num1==-1) num1=i;
-                else if(num2==-1) num2=i;
-            }
-            if(num1!=-1&&num2!=-1){
-                if(difference>num2-num1)
-                {
-                difference = num2-num1;
-                ans1 = num1;
-                ans2 = num2;
-                }
-                num1 = num2;
-                num2 = -1;
-            }
+        if (right < 2) return {-1, -1}; 
+    
+    vector<bool> prime(right + 1, true);
+    prime[0] = prime[1] = false;
+    
+    for (int p = 2; p * p <= right; p++) {
+        if (prime[p]) {
+            for (int i = p * p; i <= right; i += p)
+                prime[i] = false;
         }
-        v.push_back(ans1);
-        v.push_back(ans2);
-        return v;
     }
-    bool isPrime(int n) {
-    if(n <= 1) return false;
-    if(n <= 3) return true;
-
-    if(n % 2 == 0 || n % 3 == 0) return false;
-
-    for(int i = 5; i * i <= n; i = i + 6)
-        if(n % i == 0 || n % (i + 2) == 0) return false;
-
-    return true;
+    
+    int prev = -1, num1 = -1, num2 = -1, minGap = right - left + 1;
+    for (int p = max(2, left); p <= right; p++) {
+        if (prime[p]) {
+            if (prev != -1 && (p - prev < minGap)) {
+                num1 = prev;
+                num2 = p;
+                minGap = p - prev;
+            }
+            prev = p;
+        }
+    }
+    
+    if (num1 == -1) return {-1, -1};
+    return {num1, num2};
 }
 };
